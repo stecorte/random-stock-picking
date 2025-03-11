@@ -32,7 +32,7 @@ Analisi Monte Carlo per investimenti casuali su azioni. Il processo:
    pip install -r requirements.txt
    ```
 
-4. **Salvataggio dello storico delle stock in locale**
+4. **Salvataggio dello storico delle stock in locale**  
    Per evitare di chiamare in continuazone le API di Yahoo finance, esegui questo script per salvare in locale le performance di ogni stock nel mercato selezionato:
    ```bash 
    python src/store-stock-history.py
@@ -51,14 +51,14 @@ Analisi Monte Carlo per investimenti casuali su azioni. Il processo:
    touch src/libs/cache.py
    ```
 
-   Per dsabilitare la cache basta modificare a `False` il parametro `USE_CACHE` dentro il file `src/main.py`
+   Per disabilitare la cache basta modificare a `False` il parametro `USE_CACHE` dentro il file `src/main.py`
 
 6. **Avvio applicazione**
    ```bash
    python src/main.py
    ```
 
-7. **Bonus**
+7. **Bonus**  
    Utilizza questo script per ricevere una stock random:
    ```bash
    python src/random-stock.py
