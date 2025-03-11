@@ -38,10 +38,10 @@ Analisi Monte Carlo per investimenti casuali su azioni. Il processo:
    python src/store-stock-history.py
    ```
 
-   I dati vengono salavati in un database SQLite dentro la cartella del progetto.
+   I dati vengono salvati in un database SQLite dentro la cartella del progetto.
 
 5. **Creazione del file cache.py**  
-   Per evitare di perdere tutte le simulazioni se lo script dovesse interrompresi per qualasiasi motivo, è possibile salvare ogni simulazione in una "cache".  
+   Per evitare di perdere tutte le simulazioni se lo script dovesse interrompersi per qualasiasi motivo, è possibile salvare ogni simulazione in una "cache".  
     Per utilizzare la cache è necessario creare un file con questo comando:
     ```bash
    # Windows
