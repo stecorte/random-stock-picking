@@ -4,16 +4,24 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 import os
+from libs.database import get_stock_history, store_stock_history_in_db
 
 
 def get_random_stock(stocks_list):
     return random.choice(list(stocks_list.items()))
 
 
-def get_stock_price_history(ticker, start_date):
+def store_stock_history(ticker):
     time.sleep(0.1) # Previene il rate limit delle API di yf
     stock = yf.Ticker(ticker)
-    return stock.history(period='6mo', start=start_date)
+    stock_history = stock.history(period='max')
+
+    store_stock_history_in_db(stock=ticker, stock_history=stock_history)
+
+
+def get_stock_price_history(ticker, start_date):
+    return get_stock_history(stock=ticker, since=start_date)
+
 
 """
 Percorre lo storico della stock e quando il suo valore esce dai limiti di min_perc_threshold e max_perc_threshold
@@ -30,26 +38,26 @@ def get_stock_data_on_exit(stock_history, props, balance):
         "commissions_fee": props["commissions_fee"]
     }
 
-    for stock_date, stock_data in stock_history.iterrows():
+    for stock_data in stock_history:
         # Prendo il prezzo di entrata
         if initial_price is None: 
-            initial_price = stock_data['Close']
-            min_price = stock_data['Close'] * (1 + props["min_perc_threshold"]/100)
-            max_price = stock_data['Close'] * (1 + props["max_perc_threshold"]/100)
+            initial_price = stock_data['close_price']
+            min_price = stock_data['close_price'] * (1 + props["min_perc_threshold"]/100)
+            max_price = stock_data['close_price'] * (1 + props["max_perc_threshold"]/100)
             stocks_purchased = balance / initial_price
             balance = stocks_purchased * initial_price
 
-            print(f"\tEntering {props["current_stock"]} on {stock_date.date()} at ${initial_price:.2f} per share ({stocks_purchased:.2f} shares)")
+            print(f"\tEntering {props["current_stock"]} on {stock_data['stock_date']} at ${initial_price:.2f} per share ({stocks_purchased:.2f} shares)")
             
         # Controllo quando (e se) il valore della stock esce dai limiti
-        if stock_data['Close'] < min_price or stock_data['Close'] > max_price:
-            balance = stocks_purchased * stock_data['Close']
-            print(f"\tExiting {props["current_stock"]} on {stock_date.date()} at ${stock_data['Close']:.2f} per share")
+        if stock_data['close_price'] < min_price or stock_data['close_price'] > max_price:
+            balance = stocks_purchased * stock_data['close_price']
+            print(f"\tExiting {props["current_stock"]} on {stock_data['stock_date']} at ${stock_data['close_price']:.2f} per share")
             balance = sub_commissions_to_balance(balance=balance, commissions=commissions)
-            return stock_date.date(), stock_data['Close'], balance
+            return stock_data['stock_date'], stock_data['close_price'], balance
         
     balance = sub_commissions_to_balance(balance=balance, commissions=commissions)
-    return stock_date.date(), stock_data['Close'], balance
+    return stock_data['stock_date'], stock_data['close_price'], balance
 
 
 def sub_commissions_to_balance(balance, commissions):

@@ -39,20 +39,24 @@ import libs.utilities as utils
 from datetime import datetime, timedelta
 import libs.cache as cache
 import importlib
+import libs.database as db
 
-
+"""
+CONFIGURATION PARAMETERS
+"""
 STOCK_MARKET_NAME = "nasdaq100"
 STOCK_MARKET = stock_markets[STOCK_MARKET_NAME]
-MIN_PERC_THRESHOLD = -3
-MAX_PERC_THRESHOLD = 3
-ITERATIONS = 1000
-START_DATE = "2022-09-01"
-END_DATE = "2023-05-14"
+MIN_PERC_THRESHOLD = -1
+MAX_PERC_THRESHOLD = 1
+ITERATIONS = 10000
+START_DATE = "2024-02-04"
+END_DATE = "2025-02-09"
 COMMISSIONS_PERC = 0
 COMMISSIONS_FEE = 0
 INITIAL_INVESTMENT_USD = 1000
 USE_CACHE=True
-BENCHMARK = 0.14
+BENCHMARK = 27.96
+
 
 start_date = datetime.strptime(START_DATE, "%Y-%m-%d")
 if END_DATE is not None:
@@ -62,6 +66,8 @@ else:
 
 print(f"Start date: {start_date.strftime('%Y-%m-%d')}\n")
 print(f"End date: {end_date.strftime('%Y-%m-%d')}\n")
+
+db.create_db_if_not_exists()
 
 """
 Creo la struttura dati per i risultati. 
@@ -84,7 +90,7 @@ if USE_CACHE:
     utils.write_cache_key_if_not_exists(cache_key)
     importlib.reload(cache) # Ricarico il modulo. Serve se ho appena creato la chiave
     cache = getattr(cache, cache_key)
-    print(f"Ci sono {len(cache)} simulazioni in cache\n")
+    print(f"\nCi sono {len(cache)} simulazioni in cache\n")
     for simulation_in_cache in cache:
         results["history"].append(simulation_in_cache)
 
