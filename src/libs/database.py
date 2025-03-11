@@ -34,7 +34,7 @@ def create_db_if_not_exists():
             conn.close()
 
 
-def store_stock_history_in_db(stock, stock_history):
+def store_stock_history(ticker, stock_history):
     conn = sqlite3.connect("database/stocks_history.db")
     cursor = conn.cursor()
 
@@ -44,13 +44,14 @@ def store_stock_history_in_db(stock, stock_history):
 
     data_to_insert = []
     for stock_date, stock_data in stock_history.iterrows():
-        data_to_insert.append((stock, stock_date.date(), stock_data['Close']))
+        data_to_insert.append((ticker, stock_date.date(), stock_data['Close']))
 
     try:
         cursor.executemany(query, stock_history)
         conn.commit()
     
     except sqlite3.Error as e:
+        print(f"Error on insert: {e}")
         conn.rollback()
     
     finally:

@@ -11,15 +11,6 @@ def get_random_stock(stocks_list):
     return random.choice(list(stocks_list.items()))
 
 
-def store_stock_history(ticker):
-    time.sleep(0.1) # Previene il rate limit delle API di yf
-    stock = yf.Ticker(ticker)
-    stock_history = stock.history(period='max')
-    print(stock_history.head())
-
-    store_stock_history_in_db(stock=ticker, stock_history=stock_history)
-
-
 def get_stock_price_history(ticker, start_date):
     return get_stock_history(stock=ticker, since=start_date)
 
