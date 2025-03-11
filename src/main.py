@@ -39,7 +39,6 @@ import libs.utilities as utils
 from datetime import datetime, timedelta
 import libs.cache as cache
 import importlib
-import libs.database as db
 
 """
 CONFIGURATION PARAMETERS
@@ -66,8 +65,6 @@ else:
 
 print(f"Start date: {start_date.strftime('%Y-%m-%d')}\n")
 print(f"End date: {end_date.strftime('%Y-%m-%d')}\n")
-
-db.create_db_if_not_exists()
 
 """
 Creo la struttura dati per i risultati. 

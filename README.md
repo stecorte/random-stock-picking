@@ -33,7 +33,7 @@ Analisi Monte Carlo per investimenti casuali su azioni. Il processo:
    ```
 
 4. **Creazione del file cache.py**  
-    Siccome le API di Yahoo Finance, se stressate, possono dare errore di rate limit, è possibile salvare ogni simulazione in una "cache".  
+   Per evitare di perdere tutte le simulazioni se lo script dovesse interrompresi per qualasiasi motivo, è possibile salvare ogni simulazione in una "cache".  
     Per utilizzare la cache è necessario creare un file con questo comando:
     ```bash
    # Windows
@@ -47,6 +47,9 @@ Analisi Monte Carlo per investimenti casuali su azioni. Il processo:
 
 4. **Avvio applicazione**
    ```bash
+   # Salva lo storico delle stock su un database SQLite creato in locale (da eseguire solo la prima volta)
+   python src/store-stock-history.py
+
    python src/main.py
    ```
 
