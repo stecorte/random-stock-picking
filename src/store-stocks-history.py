@@ -12,5 +12,5 @@ for stock, ticker in STOCK_MARKET.items():
     print(f"Store stock history for ticker {ticker}")
     
     history = yf.Ticker(ticker).history(period='max')
-
+    
     store_stock_history(ticker, stock_history=history)

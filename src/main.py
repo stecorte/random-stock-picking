@@ -47,7 +47,7 @@ STOCK_MARKET_NAME = "nasdaq100"
 STOCK_MARKET = stock_markets[STOCK_MARKET_NAME]
 MIN_PERC_THRESHOLD = -1
 MAX_PERC_THRESHOLD = 1
-ITERATIONS = 10000
+ITERATIONS = 100
 START_DATE = "2024-02-04"
 END_DATE = "2025-02-09"
 COMMISSIONS_PERC = 0
@@ -106,6 +106,7 @@ for i in range(ITERATIONS):
         Serve anche a ridurre le chiamate a Yahoo. Altrimenti bisognerebbe fare una chiamata per ogni giorno.
         """
         stock_history = utils.get_stock_price_history(ticker=current_stock, start_date=date_iteration)
+        print(current_stock)
 
         """
         Calcolo quando uscire in base alla soglia. 
@@ -120,6 +121,8 @@ for i in range(ITERATIONS):
         }
         date_iteration, stock_value, balance = utils.get_stock_data_on_exit(stock_history=stock_history, props=props, balance=balance)
         
+        date_iteration = datetime.strptime(date_iteration, "%Y-%m-%d").date()
+
         date_iteration = date_iteration + timedelta(days=1)
 
     return_on_investment = ((balance - INITIAL_INVESTMENT_USD) / INITIAL_INVESTMENT_USD) * 100

@@ -1,12 +1,21 @@
 import os 
 import sqlite3
 
-def create_db_if_not_exists():
-    if not os.path.exists("database"):
-        os.makedirs("database")
-        print("'database' folder created successfully")
+def get_db_folder():
+    current_file_path = os.path.abspath(__file__)
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_file_path)))
+    db_folder = os.path.join(project_root, "database")
 
-    db_path = os.path.join("database", "stocks_history.db")
+    return db_folder
+
+def create_db_if_not_exists():
+    db_folder = get_db_folder()
+
+    if not os.path.exists(db_folder):
+        os.makedirs(db_folder)
+        print(f"'database' folder created successfully in: {db_folder}")
+
+    db_path = os.path.join(db_folder, "stocks_history.db")
     
     conn = None
     try:
@@ -35,11 +44,14 @@ def create_db_if_not_exists():
 
 
 def store_stock_history(ticker, stock_history):
-    conn = sqlite3.connect("database/stocks_history.db")
+    db_folder = get_db_folder()
+    db_path = os.path.join(db_folder, "stocks_history.db")
+    
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
     query = """
-    INSERT OR IGNORE INTO history (stock, start_date, close_price) VALUES (?, ?, ?)
+    INSERT OR IGNORE INTO history (stock, stock_date, close_price) VALUES (?, ?, ?)
     """
 
     data_to_insert = []
@@ -47,7 +59,7 @@ def store_stock_history(ticker, stock_history):
         data_to_insert.append((ticker, stock_date.date(), stock_data['Close']))
 
     try:
-        cursor.executemany(query, stock_history)
+        cursor.executemany(query, data_to_insert)
         conn.commit()
     
     except sqlite3.Error as e:
@@ -59,7 +71,10 @@ def store_stock_history(ticker, stock_history):
 
 
 def get_stock_history(stock, since):
-    conn = sqlite3.connect("database/stocks_history.db")
+    db_folder = get_db_folder()
+    db_path = os.path.join(db_folder, "stocks_history.db")
+
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
     query = """
@@ -70,7 +85,7 @@ def get_stock_history(stock, since):
     """
 
     try:
-        cursor.execute(query, (stock, since))
+        cursor.execute(query, (stock, since, since))
         results = cursor.fetchall()
 
         stock_history = []

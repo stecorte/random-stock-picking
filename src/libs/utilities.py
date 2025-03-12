@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 import os
-from libs.database import get_stock_history, store_stock_history_in_db
+from libs.database import get_stock_history
 
 
 def get_random_stock(stocks_list):
